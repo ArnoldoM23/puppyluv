@@ -15,7 +15,7 @@ var app = angular.module('puppyLove', [
   'signup'
   ])
 
-app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+app.config(['$routeProvider', '$locationProvider' ,function($routeProvider, $locationProvider) {
   $routeProvider
 
     // home page
@@ -25,7 +25,12 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
     })
     .when('/add', {
       templateUrl: 'views/addOwner.html',
-      controller: 'AddOwner'
+      controller: 'AddOwner',
+      resolve: {
+        user: ['Auth', 'Owner', function(Auth, Owner) {
+          return Owner.getAllDogs(Auth.currentUser());
+        }]
+      }
     })
     .when('/owners', {
       templateUrl: 'views/owners.html',
@@ -57,4 +62,9 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
      redirectTo: '/'
     })
 
-}]);
+}])
+.run(function($rootScope, $location, Auth){
+  $rootScope.logOut = function(){
+    Auth.logOut();
+  }
+});

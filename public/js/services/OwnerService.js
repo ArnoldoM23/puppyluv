@@ -7,21 +7,26 @@ angular.module('OwnerService', [])
     get : function() {
       return $http.get('/api/owners');
     },
+
     // call to create the owner
     create : function(ownerData) {
       return $http.post('/api/owners', ownerData);
     },
     // call to update an owner
-    update: function(ownerData, id){
-      return $http.put('/api/owners/57aa4d5e4b31c711003c7621', ownerData);
+    updateOwner: function(id, ownerData){
+      return $http.put('/api/owners/'+ id, ownerData);
     },
     // call to DELETE a owner
     delete : function(id) {
       return $http.delete('/api/owners/' + id);
     },
-
+    getAllDogs: function(id){
+      return $http.get('/api/owners/'+ id + '/dog').then(function(res){
+        return res.data;
+      })
+    },
     addDog: function(id, dog){
-      return $http.post('/api/owners/' + id + '/dogs', dog)
+      return $http.post('/api/owners/'+ id , dog)
     },
     getOwner: function(id){
       return $http.get('/posts/' + id).then(function(res){
@@ -32,7 +37,7 @@ angular.module('OwnerService', [])
 
 }])
 // auth factory
-.factory('Auth', ['$http', '$window', function($http, $window){
+.factory('Auth', ['$http', '$window', '$location' , function($http, $window, $location){
   var auth = {};
   auth.saveToken = function (token){
     $window.localStorage['puppyluv-token'] = token;
@@ -53,7 +58,7 @@ angular.module('OwnerService', [])
     if(auth.isLoggedIn()){
       var token = auth.getToken();
       var payload = JSON.parse($window.atob(token.split('.')[1]));
-      return payload.username;
+      return payload.id;
     }
   };
   auth.register = function(user){
@@ -65,6 +70,7 @@ angular.module('OwnerService', [])
   auth.logIn = function(user){
     return $http.post('/api/login', user).success(function(data){
       auth.saveToken(data.token);
+      $location.path('/home')
     });
   };
   auth.logOut = function(){

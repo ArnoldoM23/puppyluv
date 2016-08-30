@@ -6,7 +6,6 @@ var dogSchema = new mongoose.Schema({
   age: Number,
   breed: String,
   sex: String,
-  location: String,
   height: String,
   weight: Number,
   dogAKCPapers: String,

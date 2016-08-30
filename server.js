@@ -14,8 +14,8 @@ require('./config/passport');
 
 var routes = require('./routes/api');
 // connect our database
-mongoose.connect("mongodb://puppy:love@ds145315.mlab.com:45315/heroku_44lg18lr" || 'mongodb://localhost/cbb');
-
+// mongoose.connect("mongodb://puppy:love@ds145315.mlab.com:45315/heroku_44lg18lr" || 'mongodb://localhost/cbb');
+mongoose.connect('mongodb://localhost/cbb');
 
 // Espress
 var app = express();

@@ -6,7 +6,9 @@ var passport = require('passport');
 var jwt = require('express-jwt');
 // Models
 var Owner = mongoose.model('Owner');
-var Messages = mongoose.model('Dog')
+var Dog = mongoose.model('Dog')
+
+var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 
 // Routes
 
@@ -21,37 +23,6 @@ router.get('/', function(req, res){
 })
 
 // more api routes wil happen here:
-
-// on  routes that end in /owners
-router.route('/owners')
-  .post(function(req, res){
-    var owner = new Owner();
-    owner.username = req.body.username;
-    owner.password = req.body.password;
-   
-    owner.save(function(err){
-      if(err){
-        res.send(err);
-      }
-
-      res.json({message: 'Owner created!'})
-    });
-  })
-  .put(function(req,res){
-  	console.log('this is the put request for user', req.body)
-  	res.json(req.body)
-  })
-  .get(function(req, res){
-    Owner.find(function(err, owners){
-      if(err){
-        res.send(err);
-      }
-      res.json(owners);
-    });
-  });
-
-
-
 router.param('owner', function(req, res, next, id){
 	var query = Owner.findById(id);
 
@@ -64,63 +35,44 @@ router.param('owner', function(req, res, next, id){
 	});
 });
 
-router.get('/owners/:owner', function(req, res){
+router.put('/owners/:owner', function(req, res, next){
+// Make changes to the owner.
+    req.owner.firstName = req.body.firstName;
+    req.owner.lastName = req.body.lastName;
+    req.owner.age = req.body.age;
+    req.owner.location = req.body.location;
+    req.owner.favorite = req.body.favorite;
+    req.owner.numberOfBreeds = req.body.numberOfBreeds;
+// save updates to the owner
+    req.owner.save(function(err, owner){
+    	if(err){ return next(err); }
+    	res.json(owner);
+    });
+});
+
+router.get('/owners/:owner/dog', function(req, res){
 	req.owner.populate('dogs', function(err, dog){
 		if (err) { return err}
 		res.json(dog);
 	})
-}); 
+});
 
-// on routes that end in /owners/:owner_id
-router.route('/owners/:owner')
-
-  .get(function(req, res, next){
-    Owner.findById(req.owner.id, function(err, owner){
-      if(err){ return next(err); }
-      res.json(owner);
-    })
-
-    .put(function(req, res, next){
-    	
-      Owner.findById(req.owner.id, function(err, owner){
-        if(err){ return next(err); }
-
-        owner.firstName = req.body.firstName;
-        owner.lastName = req.body.lastName;
-        owner.age = req.body.age;
-        owner.location = req.body.location;
-        owner.favorite = req.body.favorite;
-        owner.numberOfBreeds = req.body.numberOfBreeds;
-      });
-    });
-  })
-
-  .delete(function(req, res, next){
-    Owner.remove({_id: req.params.owner_id}, function(err){
-      if(err){ return next(err); }
-
-      res.json({message: 'Successfully deleted'})
-    })
-  })
-
-
-router.post('/posts/:owner/dogs', function(req, res, next){
+router.post('/owners/:owner', function(req, res, next){
 	var dog = new Dog(req.body);
-	console.log('this is req.post ======+++++', req.owner)
+	
 	dog.owner = req.owner;
 	dog.save(function(err, dog){
 		if (err) { return next(err); }
-		req.owner.comments.push(dog);
+		req.owner.dogs.push(dog);
 		req.owner.save(function(err, dog){
 			if (err) { return next(err)}
-			res.json(comment);
+			res.json(dog);
 		});
 	});
+  
 });
 
-
 router.post('/signup', function(req, res, next){
-	console.log('hittin the server')
   if(!req.body.username || !req.body.password){
     return res.status(400).json({message: 'Please fill out all fields'});
   }
@@ -135,8 +87,6 @@ router.post('/signup', function(req, res, next){
 });
 
 router.post('/login', function(req, res, next){
-	console.log('test for login post++++=', req.body);
-
   if(!req.body.username || !req.body.password){
     return res.status(400).json({message: 'Please fill out all fields'});
   }

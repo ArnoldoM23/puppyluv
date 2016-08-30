@@ -10,19 +10,9 @@ angular.module('signup',['OwnerService'])
     Auth.register($scope.user).error(function(error){
       $scope.error = error;
     }).then(function(){
-      $state.go('home');
+      $location.path('/add');
     });
-    // $http({
-    //   method: 'POST',
-    //   url: '/login',
-    //   data: $scope.user
-    // }).then(function(res){
-    //   $window.localStorage.setItem('puppylove.login', res.data.token);
-    //   $location.path('/home')
-    // })
-    // .catch(function(error){
-    //   console.log(error)
-    // });
+
     $scope.username = '';
     $scope.password = '';
   };

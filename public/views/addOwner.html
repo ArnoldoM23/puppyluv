@@ -1,4 +1,4 @@
-<form ng-submit="editUser(owner)" class="form">
+<form  class="form">
   <ul>
     <li><h3>About You:</h3></li>
     <li> <label>First Name</label><br>
@@ -6,57 +6,65 @@
     <li><label>Last Name</label><br>
     <input type="text" name="lastName" ng-model="owner.lastName"> </li>
     <li><label>Age</label><br>
-    <input type="text" name="age" ng-model="owner.age"> </li>
+    <input type="number" name="age" ng-model="owner.age"> </li>
     <li> <label>Location</label><br>
     <input type="text" name="location" ng-model="owner.location"> </li>
     <li> <label>Favorite Breed</label><br>
     <input type="text" name="favorite" ng-model="owner.favorite"> </li>
     <li> <label>Number of Breeds Owned</label><br>
-    <input type="text" name="numberOfBreeds" ng-model="owner.numberOfBreeds"> </li>
+    <input type="number" name="numberOfBreeds" ng-model="owner.numberOfBreeds"> </li>
     <li>
-      <input type="submit">
+      <button ng-click="editUser()">Done</button>
     </li>
-  <div>{{message}}</div>
 </form>
 
 
-<button ng-click='showDogForm()'>Add Dog</button>
+<div>
+  <button ng-click='showDogForm()'>Add Dog</button>
+</div>
 
 
 
-<form ng-show='addADoggie = !addADoggie' ng-submit='addDog(dog)'>
+<form ng-show='addADoggie = !addADoggie' >
       <li><h3>About your dog:</h3></li>
     <li>
       <label>Dog's Name: </label><br>
-      <input type="text" name="dogsName" ng-model="dog.dogsName">
+      <input type="text" name="dogsName" ng-model="dog.name">
     </li>
     <li>
       <label>Dog's Age</label><br>
-      <input type="text" name="dogsAge" ng-model="dog.dogsAge">
+      <input type="number" name="dogsAge" ng-model="dog.age">
     </li>
     <li>
       <label>Dog's Breed</label><br>
-      <input type="text" name="dogsBreed" ng-model="dog.dogsBreed">
+      <input type="text" name="dogsBreed" ng-model="dog.breed">
     </li>
     <li>
       <label>Dog's Sex</label><br>
-      <input type="text" name="dogsSex" ng-model="dog.dogsSex">
+      <input type="text" name="dogsSex" ng-model="dog.sex">
     </li>
     <li>
       <label>Dog's Height</label><br>
-      <input type="text" name="dogsHeight" ng-model="dog.dogsHeight">
+      <input type="number" name="dogsHeight" ng-model="dog.height">
     </li>
     <li>
       <label>Dog's Weight</label><br>
-      <input type="text" name="dogsWeight" ng-model="dog.dogsWeight">
+      <input type="number" name="dogsWeight" ng-model="dog.weight">
     </li>
     <li>
       <label>Dog's AKC Paperwork</label><br>
-      <input type="text" name="dogsAKC" ng-model="dog.dogsAKC">
+      <input type="text" name="dogsAKC" ng-model="dog.dogAKCPapers">
     </li>
-   
-
-    <li> <input type="submit">
+     <button ng-click='addDog()'>Add Dog</button>
+    <li> 
   </ul>
+  
 </form>
 <!-- THIS IS INFO ABOUT THE DOG -->
+<div ng-show='true' ng-repeat="dog in allDogs.dogs">
+  <div>
+    <p>{{dog.name}}</p>
+    <p>{{dog.age}}</p>
+  </div>
+  
+</div>
